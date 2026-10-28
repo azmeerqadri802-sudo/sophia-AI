@@ -1,0 +1,40 @@
+name: Build Python EXE
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # اس سے آپ مینولی (manually) بھی رن کر سکتے ہیں
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11' # اپنی ضرورت کے مطابق ورژن سیٹ کر سکتے ہیں
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        # اگر آپ کے پروجیکٹ میں requirements.txt ہے تو اگلی لائن خود ہی انسٹال کر دے گی
+        if (Test-Path "requirements.txt") { pip install -r requirements.txt }
+
+    - name: Build EXE with PyInstaller
+      run: |
+        # اگر آپ کی مین فائل کا نام main.py ہے تو main.py ہی رہنے دیں
+        # اگر کوئی اور نام ہے (جیسے app.py) تو یہاں بدل لیں
+        pyinstaller --onefile --noconsole --name "MyApp" main.py
+
+    - name: Upload EXE as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Windows-EXE
+        path: dist/*.exe
