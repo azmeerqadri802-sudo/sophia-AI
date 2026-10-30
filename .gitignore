@@ -1,0 +1,6 @@
+.env
+data/*.enc
+data/*.json
+data/*.tmp
+node_modules/
+*.log

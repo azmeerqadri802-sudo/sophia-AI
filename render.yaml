@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: sophia-omnix-global
+    runtime: node
+    plan: starter
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY
+        value: "1"
+      - key: APP_ADMIN_PASSWORD
+        generateValue: true
+      - key: CONFIG_ENCRYPTION_KEY
+        generateValue: true
+    disk:
+      name: sophia-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
